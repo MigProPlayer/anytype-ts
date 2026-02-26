@@ -3,7 +3,7 @@ import { init } from 'emoji-mart';
 
 const DIV = 65039;
 const CAP = 8419;
-const TWEMOJI_BASE_URL = 'https://cdn.jsdelivr.net/gh/twitter/twemoji@14.0.2/assets/svg';
+const TWEMOJI_BASE_URL = 'https://cdn.jsdelivr.net/gh/jdecked/twemoji@17.0.2/assets/svg';
 
 class UtilSmile {
 
@@ -209,7 +209,7 @@ class UtilSmile {
 
 	/**
 	 * Converts a native emoji character to a Twemoji CDN SVG URL.
-	 * Uses the jsdelivr CDN which mirrors the Twitter/twemoji repository.
+	 * Uses the jsdelivr CDN pointing to the jdecked/twemoji@17.0.2 repository.
 	 * Note: requires internet connectivity; not suitable for offline use.
 	 * @param {string} native - The native emoji character.
 	 * @returns {string} The Twemoji SVG URL, or empty string if conversion fails.
@@ -225,10 +225,7 @@ class UtilSmile {
 			if (code === undefined) {
 				break;
 			};
-			// Skip variation selector-16 (U+FE0F)
-			if (code !== 0xFE0F) {
-				codePoints.push(code.toString(16));
-			};
+			codePoints.push(code.toString(16));
 			i += code > 0xFFFF ? 2 : 1;
 		};
 
