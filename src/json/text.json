@@ -897,6 +897,10 @@
 	"popupSettingsPersonalSectionDateTime": "Date & Time",
 	"popupSettingsPersonalSectionAdvanced": "Advanced",
 	"popupSettingsPersonalTimeFormat": "Time format",
+	"popupSettingsPersonalEmojiRenderMode": "Emoji rendering",
+	"popupSettingsPersonalEmojiRenderModeDefault": "Default",
+	"popupSettingsPersonalEmojiRenderModeSystem": "System",
+	"popupSettingsPersonalEmojiRenderModeTwemoji": "Twemoji",
 	"popupSettingsVaultCompact": "Compact",
 	"popupSettingsVaultWithMessages": "Message previews",
 

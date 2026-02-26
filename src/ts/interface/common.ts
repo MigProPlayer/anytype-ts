@@ -414,3 +414,9 @@ export enum SearchSortKey {
 	CreatedAt	 = 2,
 	ModifiedAt	 = 3,
 };
+
+export enum EmojiRenderMode {
+	Default		= 0,
+	System		= 1,
+	Twemoji		= 2,
+};
