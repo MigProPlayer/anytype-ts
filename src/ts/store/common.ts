@@ -49,6 +49,7 @@ class CommonStore {
 	public vaultIsMinimalValue = null;
 	public gridTitleClickValue = null;
 	public analyticsDeviceIdValue = null;
+	public emojiRenderModeValue = null;
 	public leftSidebarStateValue = { page: '', subPage: '' };
 
 	public recentEditModeValue: I.RecentEditMode = null;
@@ -161,6 +162,7 @@ class CommonStore {
 			vaultIsMinimalValue: observable,
 			gridTitleClickValue: observable,
 			analyticsDeviceIdValue: observable,
+			emojiRenderModeValue: observable,
 			isActiveTab: observable,
 			isPinnedValue: observable,
 			widgetSectionsValue: observable,
@@ -214,6 +216,7 @@ class CommonStore {
 			vaultIsMinimalSet: action,
 			gridTitleClickSet: action,
 			analyticsDeviceIdSet: action,
+			emojiRenderModeSet: action,
 			widgetSectionsInit: action,
 			widgetSectionsSet: action,
 			recentEditModeSet: action,
@@ -467,6 +470,17 @@ class CommonStore {
 			ret = true;
 		};
 		return ret;
+	};
+
+	get emojiRenderMode (): I.EmojiRenderMode {
+		let ret = this.emojiRenderModeValue;
+		if (ret === null) {
+			ret = Storage.get('emojiRenderMode');
+		};
+		if (undefined === ret) {
+			ret = I.EmojiRenderMode.Default;
+		};
+		return Number(ret) || I.EmojiRenderMode.Default;
 	};
 
 	/**
@@ -994,6 +1008,12 @@ class CommonStore {
 
 	gridTitleClickSet (v: boolean) {
 		this.boolSet('gridTitleClick', v);
+	};
+
+	emojiRenderModeSet (v: I.EmojiRenderMode) {
+		const value = Number(v);
+		this.emojiRenderModeValue = value as I.EmojiRenderMode;
+		Storage.set('emojiRenderMode', value);
 	};
 
 	/**

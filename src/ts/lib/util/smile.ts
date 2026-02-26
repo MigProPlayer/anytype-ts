@@ -3,6 +3,7 @@ import { init } from 'emoji-mart';
 
 const DIV = 65039;
 const CAP = 8419;
+const TWEMOJI_BASE_URL = 'https://cdn.jsdelivr.net/gh/jdecked/twemoji@17.0.2/assets/svg';
 
 class UtilSmile {
 
@@ -177,6 +178,74 @@ class UtilSmile {
 			...it,
 			name: translate(U.String.toCamelCase(`emojiCategory-${it.id}`)),
 		}));
+	};
+
+	/**
+	 * Returns the native emoji character from a colons code.
+	 * @param {string} colons - The emoji colons code.
+	 * @returns {string} The native emoji character, or empty string if not found.
+	 */
+	nativeFromColons (colons: string): string {
+		if (!colons) {
+			return '';
+		};
+
+		const parts = String(colons || '').split('::');
+		const id = String(parts[0] || '').replace(/:/g, '');
+		const item = J.Emoji.emojis[id];
+
+		if (!item) {
+			return '';
+		};
+
+		let skin = Number(String(parts[1] || '').replace(/skin-tone-([\d]+):/, '$1')) || 1;
+		if (skin > item.skins.length) {
+			skin = 1;
+		};
+
+		const s = item.skins[(skin - 1)];
+		return s ? s.native : '';
+	};
+
+	/**
+	 * Converts a native emoji character to a Twemoji CDN SVG URL.
+	 * Uses the jsdelivr CDN pointing to the jdecked/twemoji@17.0.2 repository.
+	 * Note: requires internet connectivity; not suitable for offline use.
+	 * @param {string} native - The native emoji character.
+	 * @returns {string} The Twemoji SVG URL, or empty string if conversion fails.
+	 */
+	toTwemojiUrl (native: string): string {
+		if (!native) {
+			return '';
+		};
+
+		const codePoints: string[] = [];
+		for (let i = 0; i < native.length; ) {
+			const code = native.codePointAt(i);
+			if (code === undefined) {
+				break;
+			};
+			codePoints.push(code.toString(16));
+			i += code > 0xFFFF ? 2 : 1;
+		};
+
+		if (!codePoints.length) {
+			return '';
+		};
+
+		const key = codePoints.join('-');
+		return `${TWEMOJI_BASE_URL}/${key}.svg`;
+	};
+
+	/**
+	 * Returns the local PNG source for a native emoji character.
+	 * Looks up the emoji in the cache to find its colons code, then uses srcFromColons.
+	 * @param {string} native - The native emoji character.
+	 * @returns {string} The local PNG image path, or empty string if not found.
+	 */
+	srcFromNative (native: string): string {
+		const code = this.getCode(native);
+		return code ? this.srcFromColons(code) : '';
 	};
 
 };
