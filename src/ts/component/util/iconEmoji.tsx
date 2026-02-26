@@ -41,7 +41,7 @@ const IconEmoji = observer(forwardRef<HTMLDivElement, Props>(({
 		if (native) {
 			element = (
 				<span
-					className={[ 'smileNative', `c${size}` ].join(' ')}
+					className={[ 'smileNative' ].join(' ')}
 					style={{ fontSize: `${size}px`, fontFamily: 'Apple Color Emoji, Segoe UI Emoji, Noto Color Emoji, sans-serif' }}
 				>
 					{native}
@@ -60,11 +60,13 @@ const IconEmoji = observer(forwardRef<HTMLDivElement, Props>(({
 					className={[ 'smileImage', `c${size}` ].join(' ')}
 					onDragStart={e => e.preventDefault()}
 					onError={(e: React.SyntheticEvent<HTMLImageElement>) => {
-						// Fall back to local PNG on error
+						// Fall back to local PNG on error; disable handler to prevent loop
 						const fallbackSrc = code ? U.Smile.srcFromColons(code) : '';
-						if (fallbackSrc) {
-							e.currentTarget.src = fallbackSrc;
+						if (!fallbackSrc || (e.currentTarget.src === fallbackSrc)) {
+							return;
 						};
+						e.currentTarget.onerror = null;
+						e.currentTarget.src = fallbackSrc;
 					}}
 				/>
 			);

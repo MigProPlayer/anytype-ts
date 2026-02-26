@@ -1011,8 +1011,9 @@ class CommonStore {
 	};
 
 	emojiRenderModeSet (v: I.EmojiRenderMode) {
-		this.emojiRenderModeValue = v;
-		Storage.set('emojiRenderMode', v);
+		const value = Number(v);
+		this.emojiRenderModeValue = value as I.EmojiRenderMode;
+		Storage.set('emojiRenderMode', value);
 	};
 
 	/**
