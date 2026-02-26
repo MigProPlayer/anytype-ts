@@ -30,9 +30,7 @@
 	.iconRelation { mask-size: contain; mask-repeat: no-repeat; mask-position: center; background-color: var(--color-icon); }
 
 	.iconEmoji { display: inline-block; vertical-align: top; text-align: center; position: relative; border-radius: inherit; }
-	.iconEmoji {
-		.smileNative { @include pos-abs-mid; transform: translate(-50%, -50%); line-height: 1; }
-	}
+	.iconEmoji .smileNative { @include pos-abs-mid; transform: translate(-50%, -50%); line-height: 1; }
 }
 .iconObject.c14 { width: 14px; height: 14px; }
 .iconObject.c16 { width: 16px; height: 16px; }
