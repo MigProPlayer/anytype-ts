@@ -222,6 +222,15 @@ const Graph = observer(forwardRef<GraphRefProps, Props>(({
 		d.layout = Number(d.layout) || 0;
 		d.radius = 4;
 		d.src = U.Graph.imageSrc(d);
+
+		// For remote emoji sources (e.g. Twemoji CDN), pre-compute a local PNG fallback
+		if (d.src && /^https?:\/\//.test(d.src) && d.iconEmoji) {
+			const code = U.Smile.getCode(d.iconEmoji);
+			if (code) {
+				d.srcFallback = U.Smile.srcFromColons(code).replace(/^.\//, '');
+			};
+		};
+
 		d.name = U.Smile.strip(U.Object.name(d, true));
 		d.shortName = U.String.shorten(d.name, 24);
 
@@ -252,6 +261,7 @@ const Graph = observer(forwardRef<GraphRefProps, Props>(({
 	const loadNodeImages = (mappedNodes: any[]) => {
 		// Collect unique image sources that haven't been loaded yet
 		const sourcesToLoad = new Map<string, any[]>();
+		const fallbacks = new Map<string, string>();
 
 		for (const d of mappedNodes) {
 			if (d.src && !images.current[d.src]) {
@@ -259,6 +269,9 @@ const Graph = observer(forwardRef<GraphRefProps, Props>(({
 					sourcesToLoad.set(d.src, []);
 				};
 				sourcesToLoad.get(d.src).push(d);
+			};
+			if (d.src && d.srcFallback && (d.src !== d.srcFallback)) {
+				fallbacks.set(d.src, d.srcFallback);
 			};
 		};
 
@@ -278,16 +291,10 @@ const Graph = observer(forwardRef<GraphRefProps, Props>(({
 					return;
 				};
 
-				const img = new Image();
-				img.onload = () => {
-					if (images.current[src]) {
-						return;
-					};
-
-					const ratio = img.naturalHeight / img.naturalWidth || 1;
-
+				const loadBitmap = (imgEl: HTMLImageElement) => {
+					const ratio = imgEl.naturalHeight / imgEl.naturalWidth || 1;
 					try {
-						createImageBitmap(img, {
+						createImageBitmap(imgEl, {
 							resizeWidth: I.ImageSize.Small,
 							resizeHeight: I.ImageSize.Small * ratio,
 							resizeQuality: 'high',
@@ -295,11 +302,33 @@ const Graph = observer(forwardRef<GraphRefProps, Props>(({
 							if (images.current[src]) {
 								return;
 							};
-
 							images.current[src] = true;
 							send('image', { src, bitmap: res });
 						}).catch(() => { /**/ });
 					} catch (e) { /**/ };
+				};
+
+				const img = new Image();
+				img.onload = () => {
+					if (images.current[src]) {
+						return;
+					};
+					loadBitmap(img);
+				};
+				img.onerror = () => {
+					const fallbackSrc = fallbacks.get(src);
+					if (!fallbackSrc || images.current[src]) {
+						return;
+					};
+					const fallbackImg = new Image();
+					fallbackImg.onload = () => {
+						if (images.current[src]) {
+							return;
+						};
+						loadBitmap(fallbackImg);
+					};
+					fallbackImg.onerror = () => { /**/ };
+					fallbackImg.src = fallbackSrc;
 				};
 				img.crossOrigin = 'anonymous';
 				img.src = src;
