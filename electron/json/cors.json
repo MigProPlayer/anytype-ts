@@ -38,7 +38,8 @@
 		"https://*.gstatic.com",
 		"https://*.twimg.com",
 		"https://*.twitter.com",
-		"https://*.fbcdn.net"
+		"https://*.fbcdn.net",
+		"https://cdn.jsdelivr.net"
     ],
 
 	"media-src": [ 
