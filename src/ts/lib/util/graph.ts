@@ -36,7 +36,7 @@ class UtilGraph {
 		};
 
 		const src = U.Smile.srcFromColons(code);
-		return src.replace(/^.\//, '');
+		return src.replace(/^\.\//, '');
 	};
 
 	/**

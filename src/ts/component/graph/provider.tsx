@@ -227,7 +227,7 @@ const Graph = observer(forwardRef<GraphRefProps, Props>(({
 		if (d.src && /^https?:\/\//.test(d.src) && d.iconEmoji) {
 			const code = U.Smile.getCode(d.iconEmoji);
 			if (code) {
-				d.srcFallback = U.Smile.srcFromColons(code).replace(/^.\//, '');
+				d.srcFallback = U.Smile.srcFromColons(code).replace(/^\.\//, '');
 			};
 		};
 
